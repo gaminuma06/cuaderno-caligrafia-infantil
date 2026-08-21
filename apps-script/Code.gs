@@ -64,6 +64,7 @@ function doPost(e) {
         datos.total || "",
         "Nuevo", // Estado: marca manualmente como "Enviado a Dropi" al procesarlo
       ]);
+      SpreadsheetApp.flush(); // fuerza a que la fila quede escrita de una vez, no en cola
     } finally {
       lock.releaseLock();
     }
