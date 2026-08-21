@@ -9,11 +9,14 @@
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7E_hyg8wKg-T_pfbInvZNEOP2ZeBjMdckaTXw39oBO_SIGa1VB2J-GjBAou5hR6wLWw/exec";
 const WHATSAPP_NUMERO = "573012251358";
 
+// Precios ya incluyen el envío (no se cobra nada aparte al recibir).
 const BUNDLES = {
-  "1": { unidades: 1, total: 42000, etiqueta: "1 Kit" },
-  "2": { unidades: 2, total: 75000, etiqueta: "2 Kits" },
-  "3": { unidades: 3, total: 99000, etiqueta: "3 Kits" },
+  "1": { unidades: 1, total: 45900, etiqueta: "1 Kit" },
+  "2": { unidades: 2, total: 79900, etiqueta: "2 Kits" },
+  "3": { unidades: 3, total: 99900, etiqueta: "3 Kits" },
 };
+
+const PAGE_LOADED_AT = Date.now();
 
 const money = (n) =>
   "$" + n.toLocaleString("es-CO", { maximumFractionDigits: 0 });
@@ -162,6 +165,11 @@ function initForm() {
       total: BUNDLES[bundle].total,
       producto: "Kit Cuadernos Mágicos Montessori de Caligrafía",
       origen: location.href,
+      // Señales anti-spam: el servidor (Code.gs) decide qué hacer con esto,
+      // no lo bloqueamos aquí porque un bot que llama directo a la URL del
+      // Apps Script se saltaría cualquier validación hecha solo en el navegador.
+      sitio_web: form.sitio_web.value.trim(),
+      segundos_en_pagina: Math.round((Date.now() - PAGE_LOADED_AT) / 1000),
     };
 
     try {
