@@ -23,35 +23,50 @@ function doPost(e) {
       return responderOk(); // se descarta en silencio, no se escribe nada
     }
 
-    if (!pasaAntiDuplicado(datos.telefono)) {
-      return responderOk(); // mismo teléfono hace muy poco, probable doble clic o reintento
+    // LockService asegura que dos pedidos casi simultáneos (ej: doble clic,
+    // o alguien mandando el mismo teléfono varias veces seguidas) no puedan
+    // "colarse" ambos antes de que el primero alcance a marcar el teléfono
+    // como visto. Sin esto, el chequeo de duplicados tiene una condición de
+    // carrera y puede fallar (ya pasó en pruebas).
+    const lock = LockService.getScriptLock();
+    const tieneLock = lock.tryLock(10000);
+    if (!tieneLock) {
+      return responderOk(); // no se pudo asegurar exclusividad, mejor no arriesgar
     }
 
-    const hoja = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+    try {
+      if (!pasaAntiDuplicado(datos.telefono)) {
+        return responderOk(); // mismo teléfono hace muy poco, probable doble clic o reintento
+      }
 
-    if (hoja.getLastRow() === 0) {
+      const hoja = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+
+      if (hoja.getLastRow() === 0) {
+        hoja.appendRow([
+          "Fecha", "Nombres", "Apellidos", "Cedula", "Telefono", "Departamento",
+          "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado",
+        ]);
+        hoja.getRange(1, 1, 1, 13).setFontWeight("bold");
+      }
+
       hoja.appendRow([
-        "Fecha", "Nombres", "Apellidos", "Cedula", "Telefono", "Departamento",
-        "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado",
+        new Date(datos.fecha || Date.now()),
+        datos.nombres || "",
+        datos.apellidos || "",
+        datos.cedula || "",
+        datos.telefono || "",
+        datos.departamento || "",
+        datos.ciudad || "",
+        datos.direccion || "",
+        datos.notas || "",
+        datos.bundle || "",
+        datos.unidades || "",
+        datos.total || "",
+        "Nuevo", // Estado: marca manualmente como "Enviado a Dropi" al procesarlo
       ]);
-      hoja.getRange(1, 1, 1, 13).setFontWeight("bold");
+    } finally {
+      lock.releaseLock();
     }
-
-    hoja.appendRow([
-      new Date(datos.fecha || Date.now()),
-      datos.nombres || "",
-      datos.apellidos || "",
-      datos.cedula || "",
-      datos.telefono || "",
-      datos.departamento || "",
-      datos.ciudad || "",
-      datos.direccion || "",
-      datos.notas || "",
-      datos.bundle || "",
-      datos.unidades || "",
-      datos.total || "",
-      "Nuevo", // Estado: marca manualmente como "Enviado a Dropi" al procesarlo
-    ]);
 
     return responderOk();
   } catch (err) {
