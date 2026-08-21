@@ -1,4 +1,4 @@
-# Garabatín Mágico — Landing Kit Cuadernos Mágicos Montessori
+# Caligrafía Infantil — Landing Kit Cuadernos Montessori
 
 Landing de una sola página (single page, sin menú de navegación) para tráfico pago
 de Facebook/TikTok Ads, hecha en HTML + CSS + JS puro. Publicada en:
