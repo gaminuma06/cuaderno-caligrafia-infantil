@@ -56,7 +56,8 @@ function initCarrusel() {
     if (reduceMotion) return;
 
     const video = currentVideo();
-    if (video && video.currentSrc) {
+    const tieneFuenteReal = video && video.querySelector("source[src]");
+    if (tieneFuenteReal) {
       // Slide de video con fuente real: espera a que termine para avanzar.
       video.currentTime = 0;
       video.play().catch(() => {}); // autoplay puede fallar si el navegador lo bloquea
