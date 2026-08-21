@@ -35,10 +35,6 @@ function doPost(e) {
     }
 
     try {
-      if (!pasaAntiDuplicado(datos.telefono)) {
-        return responderOk(); // mismo teléfono hace muy poco, probable doble clic o reintento
-      }
-
       const hoja = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
 
       if (hoja.getLastRow() === 0) {
@@ -47,6 +43,10 @@ function doPost(e) {
           "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado",
         ]);
         hoja.getRange(1, 1, 1, 13).setFontWeight("bold");
+      }
+
+      if (esDuplicadoReciente(hoja, datos.telefono)) {
+        return responderOk(); // mismo teléfono hace muy poco, probable doble clic o reintento
       }
 
       hoja.appendRow([
@@ -111,15 +111,29 @@ function esPedidoLegitimo(datos) {
   return true;
 }
 
-/** true si NO hay un pedido reciente con el mismo teléfono (evita duplicados
- * por doble clic, reintentos de red, o un bot mandando el mismo número muchas
- * veces seguidas). */
-function pasaAntiDuplicado(telefono) {
-  const cache = CacheService.getScriptCache();
-  const clave = "tel_" + telefono;
-  if (cache.get(clave)) return false;
-  cache.put(clave, "1", MINUTOS_ANTIDUPLICADO * 60);
-  return true;
+/** true si YA hay un pedido con el mismo teléfono en los últimos minutos
+ * (doble clic, reintento de red, o alguien mandando el mismo número varias
+ * veces seguidas). Revisa la hoja directamente en vez de CacheService: el
+ * caché no garantiza estar al día de inmediato entre ejecuciones separadas
+ * (se comprobó en pruebas), la hoja sí — es la fuente real de los datos. */
+function esDuplicadoReciente(hoja, telefono) {
+  const ultimaFila = hoja.getLastRow();
+  if (ultimaFila < 2) return false;
+
+  const primeraFilaARevisar = Math.max(2, ultimaFila - 20 + 1); // últimas ~20 filas alcanza de sobra
+  const cantidadFilas = ultimaFila - primeraFilaARevisar + 1;
+  const valores = hoja.getRange(primeraFilaARevisar, 1, cantidadFilas, 5).getValues(); // A:Fecha ... E:Telefono
+
+  const limiteMs = MINUTOS_ANTIDUPLICADO * 60 * 1000;
+  const ahora = Date.now();
+
+  for (let i = valores.length - 1; i >= 0; i--) {
+    const [fecha, , , , tel] = valores[i];
+    if (String(tel) === telefono && fecha instanceof Date && (ahora - fecha.getTime()) < limiteMs) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /**
