@@ -138,13 +138,12 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
     <!-- ===== 3. PRECIO + CTA (above the fold) ===== -->
     <section class="price-block" id="oferta">
       <div class="price-row">
-        <span class="price-old">$59.900</span>
-        <span class="price-new">$42.000</span>
+        <span class="price-new">$45.900</span>
       </div>
-      <p class="price-save">Ahorras $17.900 hoy · Precio por 1 kit</p>
+      <p class="price-save">🚚 Envío gratis incluido · Precio por 1 kit</p>
       <a href="#pedido" class="btn btn-primary" data-cta="comprar">🛒 Comprar ahora</a>
       <div class="trust-row">
-        <span>📦 Envío a toda Colombia</span>
+        <span>🚚 Envío gratis</span>
         <span>💵 Pago contraentrega</span>
         <span>🔄 Garantía de cambio</span>
       </div>
@@ -159,7 +158,7 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
       <div class="badges-grid">
         <div class="badge-card"><span class="emoji">📚</span><span class="label">Método Montessori</span></div>
         <div class="badge-card"><span class="emoji">👦</span><span class="label">Desde los 3 años</span></div>
-        <div class="badge-card"><span class="emoji">🇨🇴</span><span class="label">Envío nacional</span></div>
+        <div class="badge-card"><span class="emoji">🚚</span><span class="label">Envío gratis</span></div>
         <div class="badge-card"><span class="emoji">✅</span><span class="label">Pago contraentrega</span></div>
       </div>
       <!--
@@ -241,9 +240,9 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
         <p class="urgency">⏳ Stock limitado — 858 unidades disponibles</p>
         <h2 class="section-title">Dale a tu hijo una forma divertida de aprender a escribir</h2>
         <div class="price-row" style="margin:14px 0;">
-          <span class="price-old">$59.900</span>
-          <span class="price-new">$42.000</span>
+          <span class="price-new">$45.900</span>
         </div>
+        <p class="price-save">🚚 Envío gratis incluido</p>
         <a href="#pedido" class="btn btn-primary" data-cta="comprar">🛒 Comprar ahora</a>
       </div>
     </section>
@@ -259,30 +258,40 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
           <label class="bundle-option">
             <input type="radio" name="bundle" value="1" checked>
             <span class="bundle-title">1 Kit</span>
-            <div class="bundle-price">$42.000 c/u</div>
-            <span class="bundle-total">$42.000</span>
+            <div class="bundle-price">$45.900 c/u</div>
+            <span class="bundle-total">$45.900</span>
           </label>
 
           <label class="bundle-option">
             <input type="radio" name="bundle" value="2">
             <span class="bundle-title">2 Kits</span>
             <span class="bundle-tag">Más elegido</span>
-            <div class="bundle-price">$37.500 c/u</div>
-            <span class="bundle-total">$75.000</span>
+            <div class="bundle-price">$39.950 c/u</div>
+            <span class="bundle-total">$79.900</span>
           </label>
 
           <label class="bundle-option">
             <input type="radio" name="bundle" value="3">
             <span class="bundle-title">3 Kits</span>
             <span class="bundle-tag">Mejor precio</span>
-            <div class="bundle-price">$33.000 c/u</div>
-            <span class="bundle-total">$99.000</span>
+            <div class="bundle-price">$33.300 c/u</div>
+            <span class="bundle-total">$99.900</span>
           </label>
         </div>
+        <p class="bundle-envio-note">🚚 Envío gratis a toda Colombia incluido en el precio — no pagas nada aparte al recibir.</p>
 
         <ul class="form-errores" id="form-errores" hidden></ul>
 
         <form id="form-pedido" novalidate>
+          <!-- Campo trampa anti-spam: invisible para personas, pero los bots que
+               rellenan formularios automáticamente sí lo completan. Si llega
+               lleno, el pedido se descarta silenciosamente (ver main.js y
+               apps-script/Code.gs). No quitar ni renombrar. -->
+          <div class="campo-trampa" aria-hidden="true">
+            <label for="sitio_web">No completar este campo</label>
+            <input type="text" id="sitio_web" name="sitio_web" tabindex="-1" autocomplete="off">
+          </div>
+
           <div class="field-row">
             <div class="field">
               <label for="nombres">Nombres</label>
@@ -328,7 +337,7 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
 
           <div class="order-summary">
             <span>Total a pagar contraentrega (<span data-resumen-etiqueta>1 Kit</span>)</span>
-            <strong data-resumen-total>$42.000</strong>
+            <strong data-resumen-total>$45.900</strong>
           </div>
 
           <button type="submit" class="btn btn-primary">Confirmar pedido</button>
@@ -362,7 +371,7 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
 
 <!-- ===== Barra CTA fija (mobile) ===== -->
 <div class="sticky-cta">
-  <span class="sticky-price">$42.000</span>
+  <span class="sticky-price">$45.900</span>
   <a href="#pedido" class="btn btn-primary" data-cta="comprar">🛒 Comprar ahora</a>
 </div>
 

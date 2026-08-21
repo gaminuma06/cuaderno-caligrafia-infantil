@@ -3,13 +3,30 @@
  * y los guarda como fila nueva en la PRIMERA pestaña de la hoja de cálculo
  * indicada por SHEET_ID (apuntado directo por ID, no depende de que el
  * script esté "vinculado" a la hoja).
+ *
+ * Incluye filtros anti-spam: pedidos con datos inválidos, con el campo
+ * trampa lleno (bots), enviados demasiado rápido, o repetidos con el mismo
+ * teléfono en pocos minutos, NO se guardan en la hoja — así no la ensucian
+ * con basura. En todos los casos se responde igual (ok:true) para no darle
+ * pistas a los bots de que fueron detectados.
  */
 
 const SHEET_ID = "1QScesaVPIQhF3SU6N-VCCLQ7Ih30sIt14JBSfM0mVOc";
+const SEGUNDOS_MINIMOS_EN_PAGINA = 3; // menos que esto = casi seguro un bot
+const MINUTOS_ANTIDUPLICADO = 3; // mismo teléfono repetido antes de este tiempo = ignorado
 
 function doPost(e) {
   try {
     const datos = JSON.parse(e.postData.contents);
+
+    if (!esPedidoLegitimo(datos)) {
+      return responderOk(); // se descarta en silencio, no se escribe nada
+    }
+
+    if (!pasaAntiDuplicado(datos.telefono)) {
+      return responderOk(); // mismo teléfono hace muy poco, probable doble clic o reintento
+    }
+
     const hoja = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
 
     if (hoja.getLastRow() === 0) {
@@ -36,14 +53,58 @@ function doPost(e) {
       "Nuevo", // Estado: marca manualmente como "Enviado a Dropi" al procesarlo
     ]);
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: true }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return responderOk();
   } catch (err) {
     return ContentService
       .createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+function responderOk() {
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Revalida en el servidor lo mismo que ya valida el formulario, más las
+ * señales anti-bot. Nunca confíes solo en la validación del navegador: cualquiera
+ * puede mandarle datos directo a esta URL sin pasar por la página. */
+function esPedidoLegitimo(datos) {
+  if (datos.sitio_web) return false; // campo trampa lleno = bot
+
+  if (typeof datos.segundos_en_pagina === "number" &&
+      datos.segundos_en_pagina < SEGUNDOS_MINIMOS_EN_PAGINA) {
+    return false; // envió el formulario demasiado rápido para ser una persona
+  }
+
+  const nombres = (datos.nombres || "").trim();
+  const apellidos = (datos.apellidos || "").trim();
+  const cedula = (datos.cedula || "").trim();
+  const telefono = (datos.telefono || "").trim();
+  const ciudad = (datos.ciudad || "").trim();
+  const direccion = (datos.direccion || "").trim();
+
+  if (nombres.length < 2) return false;
+  if (apellidos.length < 2) return false;
+  if (!/^\d{6,10}$/.test(cedula)) return false;
+  if (!/^3\d{9}$/.test(telefono)) return false;
+  if (!datos.departamento) return false;
+  if (ciudad.length < 2) return false;
+  if (direccion.length < 5) return false;
+
+  return true;
+}
+
+/** true si NO hay un pedido reciente con el mismo teléfono (evita duplicados
+ * por doble clic, reintentos de red, o un bot mandando el mismo número muchas
+ * veces seguidas). */
+function pasaAntiDuplicado(telefono) {
+  const cache = CacheService.getScriptCache();
+  const clave = "tel_" + telefono;
+  if (cache.get(clave)) return false;
+  cache.put(clave, "1", MINUTOS_ANTIDUPLICADO * 60);
+  return true;
 }
 
 /**
@@ -65,7 +126,8 @@ function pruebaManual() {
         notas: "Esto es una fila de prueba, la puedes borrar",
         bundle: "1 Kit",
         unidades: 1,
-        total: 42000,
+        total: 45900,
+        segundos_en_pagina: 10,
       }),
     },
   });
