@@ -285,10 +285,20 @@ ul { margin: 0; padding: 0; list-style: none; }
   font-size: 0.9rem;
   margin-bottom: 20px;
 }
+.bundle-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-align: center;
+  margin: 0 0 12px;
+}
 .bundles {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed var(--color-border);
 }
 .bundle-option {
   position: relative;

@@ -100,15 +100,13 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
         <div class="media-viewport" id="media-viewport">
           <div class="media-track" id="media-track">
 
-            <!-- Slide 1: video — PENDIENTE: agregar <source src="assets/img/video-demo.mp4" type="video/mp4">
-                 dentro del <video>. Mientras no haya archivo, se comporta como
-                 una foto más (avanza sola tras el tiempo normal). Cuando el
-                 <video> tenga una fuente real, el carrusel detecta que es un
-                 video y espera a que termine de reproducirse para avanzar. -->
-            <div class="media-slide media-slide--placeholder" style="--tint:#e5f7ea;">
-              <video muted playsinline preload="none"></video>
-              <span class="media-slide-icon">🎥</span>
-              <span class="media-slide-label">Video de demostración<br><small>(pendiente)</small></span>
+            <!-- Slide 1: video de demostración (14s, armado con las fotos reales
+                 del producto). Se reproduce solo al llegar a este slide y, al
+                 terminar, el carrusel avanza a las fotos automáticamente. -->
+            <div class="media-slide">
+              <video muted playsinline preload="auto">
+                <source src="assets/img/video-demo.mp4" type="video/mp4">
+              </video>
             </div>
 
             <div class="media-slide">
@@ -152,38 +150,7 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
       </div>
     </section>
 
-    <!-- ===== 4. SELECTOR DE BUNDLE ===== -->
-    <section class="section" id="bundles">
-      <h2 class="section-title">Elige tu kit</h2>
-      <p class="section-sub">Mientras más cuadernos, más ahorras por unidad</p>
-
-      <div class="bundles" role="radiogroup" aria-label="Selecciona tu kit">
-        <label class="bundle-option">
-          <input type="radio" name="bundle" value="1" checked>
-          <span class="bundle-title">1 Kit</span>
-          <div class="bundle-price">$42.000 c/u</div>
-          <span class="bundle-total">$42.000</span>
-        </label>
-
-        <label class="bundle-option">
-          <input type="radio" name="bundle" value="2">
-          <span class="bundle-title">2 Kits</span>
-          <span class="bundle-tag">Más elegido</span>
-          <div class="bundle-price">$37.500 c/u</div>
-          <span class="bundle-total">$75.000</span>
-        </label>
-
-        <label class="bundle-option">
-          <input type="radio" name="bundle" value="3">
-          <span class="bundle-title">3 Kits</span>
-          <span class="bundle-tag">Mejor precio</span>
-          <div class="bundle-price">$33.000 c/u</div>
-          <span class="bundle-total">$99.000</span>
-        </label>
-      </div>
-    </section>
-
-    <!-- ===== 5. PRUEBA SOCIAL TEMPRANA =====
+    <!-- ===== 4. PRUEBA SOCIAL TEMPRANA =====
          No se publican reseñas inventadas: usar testimonios falsos con nombre/foto
          viola políticas de Meta/TikTok Ads y normas de publicidad engañosa.
          Se muestran badges de confianza genéricos. Reemplaza este bloque cuando
@@ -287,6 +254,32 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
       <p class="section-sub">Pago contraentrega: nos comunicamos contigo para confirmar antes de despachar.</p>
 
       <div class="order-card">
+        <p class="bundle-heading">Elige cuántos kits quieres</p>
+        <div class="bundles" role="radiogroup" aria-label="Selecciona tu kit">
+          <label class="bundle-option">
+            <input type="radio" name="bundle" value="1" checked>
+            <span class="bundle-title">1 Kit</span>
+            <div class="bundle-price">$42.000 c/u</div>
+            <span class="bundle-total">$42.000</span>
+          </label>
+
+          <label class="bundle-option">
+            <input type="radio" name="bundle" value="2">
+            <span class="bundle-title">2 Kits</span>
+            <span class="bundle-tag">Más elegido</span>
+            <div class="bundle-price">$37.500 c/u</div>
+            <span class="bundle-total">$75.000</span>
+          </label>
+
+          <label class="bundle-option">
+            <input type="radio" name="bundle" value="3">
+            <span class="bundle-title">3 Kits</span>
+            <span class="bundle-tag">Mejor precio</span>
+            <div class="bundle-price">$33.000 c/u</div>
+            <span class="bundle-total">$99.000</span>
+          </label>
+        </div>
+
         <ul class="form-errores" id="form-errores" hidden></ul>
 
         <form id="form-pedido" novalidate>
