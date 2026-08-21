@@ -15,12 +15,17 @@ const SHEET_ID = "1QScesaVPIQhF3SU6N-VCCLQ7Ih30sIt14JBSfM0mVOc";
 const SEGUNDOS_MINIMOS_EN_PAGINA = 3; // menos que esto = casi seguro un bot
 const MINUTOS_ANTIDUPLICADO = 3; // mismo teléfono repetido antes de este tiempo = ignorado
 
+// DEBUG_TEMPORAL: si esto es true, la respuesta incluye info de diagnóstico
+// del chequeo de duplicados. Ponlo en false (o bórralo) cuando ya no lo
+// necesites — es solo para encontrar el bug del filtro anti-spam.
+const DEBUG_TEMPORAL = true;
+
 function doPost(e) {
   try {
     const datos = JSON.parse(e.postData.contents);
 
     if (!esPedidoLegitimo(datos)) {
-      return responderOk(); // se descarta en silencio, no se escribe nada
+      return responderOk({ motivo: "no_legitimo" });
     }
 
     // LockService asegura que dos pedidos casi simultáneos (ej: doble clic,
@@ -31,9 +36,10 @@ function doPost(e) {
     const lock = LockService.getScriptLock();
     const tieneLock = lock.tryLock(10000);
     if (!tieneLock) {
-      return responderOk(); // no se pudo asegurar exclusividad, mejor no arriesgar
+      return responderOk({ motivo: "sin_lock" });
     }
 
+    let diagnostico;
     try {
       const hoja = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
 
@@ -45,8 +51,9 @@ function doPost(e) {
         hoja.getRange(1, 1, 1, 13).setFontWeight("bold");
       }
 
-      if (esDuplicadoReciente(hoja, datos.telefono)) {
-        return responderOk(); // mismo teléfono hace muy poco, probable doble clic o reintento
+      diagnostico = esDuplicadoReciente(hoja, datos.telefono);
+      if (diagnostico.esDuplicado) {
+        return responderOk({ motivo: "duplicado", diagnostico });
       }
 
       hoja.appendRow([
@@ -69,7 +76,7 @@ function doPost(e) {
       lock.releaseLock();
     }
 
-    return responderOk();
+    return responderOk({ motivo: "guardado", diagnostico });
   } catch (err) {
     return ContentService
       .createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
@@ -77,9 +84,10 @@ function doPost(e) {
   }
 }
 
-function responderOk() {
+function responderOk(info) {
+  const cuerpo = DEBUG_TEMPORAL ? Object.assign({ ok: true }, info) : { ok: true };
   return ContentService
-    .createTextOutput(JSON.stringify({ ok: true }))
+    .createTextOutput(JSON.stringify(cuerpo))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -119,7 +127,9 @@ function esPedidoLegitimo(datos) {
  * (se comprobó en pruebas), la hoja sí — es la fuente real de los datos. */
 function esDuplicadoReciente(hoja, telefono) {
   const ultimaFila = hoja.getLastRow();
-  if (ultimaFila < 2) return false;
+  if (ultimaFila < 2) {
+    return { esDuplicado: false, ultimaFila, filasRevisadas: [] };
+  }
 
   const primeraFilaARevisar = Math.max(2, ultimaFila - 20 + 1); // últimas ~20 filas alcanza de sobra
   const cantidadFilas = ultimaFila - primeraFilaARevisar + 1;
@@ -128,13 +138,22 @@ function esDuplicadoReciente(hoja, telefono) {
   const limiteMs = MINUTOS_ANTIDUPLICADO * 60 * 1000;
   const ahora = Date.now();
 
+  const filasRevisadas = valores.map(([fecha, , , , tel]) => ({
+    telSheet: tel,
+    tipoTel: typeof tel,
+    coincideTel: String(tel) === telefono,
+    fechaEsDate: fecha instanceof Date,
+    fechaValor: fecha instanceof Date ? fecha.toISOString() : String(fecha),
+    edadMs: fecha instanceof Date ? (ahora - fecha.getTime()) : null,
+  }));
+
   for (let i = valores.length - 1; i >= 0; i--) {
     const [fecha, , , , tel] = valores[i];
     if (String(tel) === telefono && fecha instanceof Date && (ahora - fecha.getTime()) < limiteMs) {
-      return true;
+      return { esDuplicado: true, ultimaFila, telefonoBuscado: telefono, filasRevisadas };
     }
   }
-  return false;
+  return { esDuplicado: false, ultimaFila, telefonoBuscado: telefono, filasRevisadas };
 }
 
 /**
