@@ -81,12 +81,11 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
 
       <!-- Carrusel de fotos/video del producto, enmarcado con letras de trazo
            guiado en el borde (mismo motivo del cuaderno).
-           Slide 1 = video (autoplay silencioso); al terminar, pasa solo a
-           las fotos. Los demás slides son placeholders: cuando tengas las
-           fotos/video reales, reemplaza cada .media-slide--placeholder —
-           ver marcas "PENDIENTE" abajo. Las flechas solo aparecen al pasar
-           el mouse por encima (o con foco de teclado); en celular se usa
-           el swipe. -->
+           Slide 1 = video (todavía pendiente, ver más abajo); al agregar el
+           archivo real, se reproduce solo y al terminar pasa a las fotos.
+           Slides 2-5 = fotos reales del producto. Las flechas solo aparecen
+           al pasar el mouse por encima (o con foco de teclado); en celular
+           se usa el swipe. -->
       <div class="media-frame">
         <svg class="media-frame-deco" viewBox="0 0 320 280" aria-hidden="true">
           <rect x="4" y="4" width="312" height="272" rx="24" fill="none" stroke="#ffd9c2" stroke-width="9"/>
@@ -113,38 +112,19 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
             </div>
 
             <div class="media-slide">
-              <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cuaderno con letras de trazo guiado y un lapicero">
-                <ellipse cx="160" cy="238" rx="120" ry="14" fill="#f0dfc4" opacity="0.6"/>
-                <rect x="55" y="55" width="210" height="150" rx="16" fill="#4d96ff"/>
-                <rect x="70" y="70" width="180" height="120" rx="10" fill="#ffffff"/>
-                <path d="M85 95 h150 M85 155 h150" stroke="#dbe9ff" stroke-width="4" stroke-linecap="round"/>
-                <path d="M100 148 L112 112 L124 148 M104 136 h16" stroke="#dbe9ff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 7"/>
-                <path d="M145 148 L157 112 L169 148" stroke="#ff6b6b" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M190 112 v36 M190 112 q14 0 14 10 t-14 10" stroke="#dbe9ff" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="2 7"/>
-                <g transform="rotate(18 235 70)">
-                  <rect x="225" y="20" width="16" height="90" rx="8" fill="#ffd166"/>
-                  <polygon points="225,20 241,20 233,4" fill="#e6503f"/>
-                </g>
-                <g fill="#ffd166"><circle cx="270" cy="45" r="4"/><circle cx="285" cy="65" r="3"/><circle cx="260" cy="30" r="2.5"/></g>
-              </svg>
+              <img src="assets/img/foto-1-kit-completo.jpg" alt="Kit completo: los 4 cuadernos Montessori (Alfabeto, Números, Matemáticas y Dibujo) con el lapicero y los núcleos de repuesto" loading="lazy">
             </div>
 
-            <!-- PENDIENTE: reemplazar por <img src="assets/img/foto-2.jpg" alt="..."> -->
-            <div class="media-slide media-slide--placeholder" style="--tint:#fff2df;">
-              <span class="media-slide-icon">📷</span>
-              <span class="media-slide-label">Foto del kit completo<br><small>(pendiente)</small></span>
+            <div class="media-slide">
+              <img src="assets/img/foto-2-nino-trazando.jpg" alt="Niño practicando trazos guiados con el cuaderno de Dibujo" loading="lazy">
             </div>
 
-            <!-- PENDIENTE: reemplazar por <img src="assets/img/foto-3.jpg" alt="..."> -->
-            <div class="media-slide media-slide--placeholder" style="--tint:#e3edff;">
-              <span class="media-slide-icon">📷</span>
-              <span class="media-slide-label">Close-up del trazo guiado<br><small>(pendiente)</small></span>
+            <div class="media-slide">
+              <img src="assets/img/foto-3-trazo-guiado.jpg" alt="Close-up de las páginas de trazo guiado: letras, números y matemáticas" loading="lazy">
             </div>
 
-            <!-- PENDIENTE: reemplazar por <img src="assets/img/foto-4.jpg" alt="..."> -->
-            <div class="media-slide media-slide--placeholder" style="--tint:#ffe3ec;">
-              <span class="media-slide-icon">📷</span>
-              <span class="media-slide-label">Soporte para bolígrafo<br><small>(pendiente)</small></span>
+            <div class="media-slide">
+              <img src="assets/img/foto-4-cuadernos-lapicero.jpg" alt="Los 4 cuadernos Montessori con el lapicero y los núcleos de repuesto" loading="lazy">
             </div>
 
           </div>
