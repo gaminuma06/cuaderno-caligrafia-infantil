@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tienda Adanarías | Catálogo</title>
+<meta name="description" content="Catálogo de productos con envío a toda Colombia y pago contraentrega.">
+<meta name="robots" content="index, follow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛍️</text></svg>">
+
+<style>
+  :root {
+    /* Paleta propia de la TIENDA (catálogo) — distinta de la de cada producto */
+    --bg: #f6f5f2;
+    --bg-card: #ffffff;
+    --ink: #1f2937;
+    --ink-soft: #5b6472;
+    --primary: #0e7c66;
+    --primary-dark: #0b5f4f;
+    --accent: #f5b400;
+    --border: #e5e2da;
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --shadow-soft: 0 10px 28px rgba(31, 41, 55, 0.08);
+    --font-display: "Manrope", "Segoe UI", sans-serif;
+    --font-body: "Inter", "Segoe UI", sans-serif;
+    --max-width: 1080px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header {
+    padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+
+  .brand {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin: 0 0 0.4rem 0;
+  }
+
+  .brand span {
+    color: var(--primary);
+  }
+
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .trust-strip {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin: 1.2rem 0 0 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+  }
+
+  main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1rem 1.5rem 4rem 1.5rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(31, 41, 55, 0.12);
+  }
+
+  .card-img-box {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .card-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-badge {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    background: var(--accent);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.68rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 30px;
+    letter-spacing: 0.02em;
+  }
+
+  .card-body {
+    padding: 1.1rem 1.2rem 1.3rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.02rem;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .card-desc {
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+    flex: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+  }
+
+  .card-price {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+  }
+
+  .card-price small {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+  }
+
+  .card-cta {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--primary);
+    white-space: nowrap;
+  }
+
+  .card:hover .card-cta {
+    color: var(--primary-dark);
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--ink-soft);
+    padding: 4rem 1rem;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    border-top: 1px solid var(--border);
+  }
+
+  footer a {
+    color: var(--primary-dark);
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <p class="brand">Tienda <span>Adanarías</span></p>
+    <p class="subtitle">Productos seleccionados, con envío a toda Colombia</p>
+    <div class="trust-strip">
+      <span>🚚 Envío gratis</span>
+      <span>💵 Pago contraentrega</span>
+      <span>🛡️ Compra segura</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid" id="grid-productos">
+      <!-- Las tarjetas se generan solas desde productos-catalogo.js -->
+    </div>
+  </main>
+
+  <footer>
+    📍 Colombia · <a href="mailto:ingarias9006@gmail.com">ingarias9006@gmail.com</a> ·
+    <a href="https://wa.me/573012251358" target="_blank" rel="noopener">WhatsApp</a>
+  </footer>
+
+  <script src="/productos-catalogo.js"></script>
+  <script>
+    const grid = document.getElementById('grid-productos');
+
+    if (!PRODUCTOS_CATALOGO || PRODUCTOS_CATALOGO.length === 0) {
+      grid.innerHTML = '<div class="empty-state">Muy pronto vas a ver productos aquí.</div>';
+    } else {
+      grid.innerHTML = PRODUCTOS_CATALOGO.map(p => `
+        <a class="card" href="${p.link}">
+          <div class="card-img-box">
+            ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
+            <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${p.nombre}</h3>
+            <p class="card-desc">${p.descripcion}</p>
+            <div class="card-footer">
+              <span class="card-price">$${p.precioDesde.toLocaleString('es-CO')}<small>Desde</small></span>
+              <span class="card-cta">Ver producto →</span>
+            </div>
+          </div>
+        </a>
+      `).join('');
+    }
+  </script>
+
+</body>
+</html>
