@@ -227,7 +227,7 @@
 
   <main>
     <div class="grid" id="grid-productos">
-      <!-- Las tarjetas se generan solas desde productos-catalogo.js -->
+      <!-- Las tarjetas se generan solas desde productos-catalogo.json -->
     </div>
   </main>
 
@@ -236,30 +236,39 @@
     <a href="https://wa.me/573012251358" target="_blank" rel="noopener">WhatsApp</a>
   </footer>
 
-  <script src="/productos-catalogo.js"></script>
   <script>
     const grid = document.getElementById('grid-productos');
 
-    if (!PRODUCTOS_CATALOGO || PRODUCTOS_CATALOGO.length === 0) {
-      grid.innerHTML = '<div class="empty-state">Muy pronto vas a ver productos aquí.</div>';
-    } else {
-      grid.innerHTML = PRODUCTOS_CATALOGO.map(p => `
-        <a class="card" href="${p.link}">
-          <div class="card-img-box">
-            ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
-            <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">${p.nombre}</h3>
-            <p class="card-desc">${p.descripcion}</p>
-            <div class="card-footer">
-              <span class="card-price">$${p.precioDesde.toLocaleString('es-CO')}<small>Desde</small></span>
-              <span class="card-cta">Ver producto →</span>
+    fetch('/productos-catalogo.json?v=' + Date.now())
+      .then(r => r.json())
+      .then(productos => {
+        const visibles = (productos || []).filter(p => p.activo !== false);
+
+        if (visibles.length === 0) {
+          grid.innerHTML = '<div class="empty-state">Muy pronto vas a ver productos aquí.</div>';
+          return;
+        }
+
+        grid.innerHTML = visibles.map(p => `
+          <a class="card" href="${p.link}">
+            <div class="card-img-box">
+              ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
+              <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
             </div>
-          </div>
-        </a>
-      `).join('');
-    }
+            <div class="card-body">
+              <h3 class="card-title">${p.nombre}</h3>
+              <p class="card-desc">${p.descripcion}</p>
+              <div class="card-footer">
+                <span class="card-price">$${p.precioDesde.toLocaleString('es-CO')}<small>Desde</small></span>
+                <span class="card-cta">Ver producto →</span>
+              </div>
+            </div>
+          </a>
+        `).join('');
+      })
+      .catch(() => {
+        grid.innerHTML = '<div class="empty-state">No se pudo cargar el catálogo. Intenta recargar la página.</div>';
+      });
   </script>
 
 </body>

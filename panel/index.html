@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de Catálogo | Tienda Adan Arias</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛍️</text></svg>">
+
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --bg-card: #ffffff;
+    --ink: #1f2937;
+    --ink-soft: #5b6472;
+    --primary: #0e7c66;
+    --primary-dark: #0b5f4f;
+    --accent: #f5b400;
+    --danger: #d64545;
+    --border: #e5e2da;
+    --radius-lg: 18px;
+    --radius-md: 10px;
+    --shadow-soft: 0 8px 24px rgba(31, 41, 55, 0.08);
+    --font-display: "Manrope", "Segoe UI", sans-serif;
+    --font-body: "Inter", "Segoe UI", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 5rem 1.25rem;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.6rem;
+    margin: 0 0 0.3rem 0;
+  }
+
+  h1 span { color: var(--primary); }
+
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    margin: 0 0 1.8rem 0;
+  }
+
+  .panel-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel-box h2 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    margin: 0 0 0.8rem 0;
+  }
+
+  .panel-box ol {
+    padding-left: 1.2rem;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+
+  .panel-box code {
+    background: var(--bg);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+
+  input[type="text"], input[type="password"], input[type="number"], input[type="url"], textarea {
+    width: 100%;
+    padding: 0.7rem 0.8rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin: 0.7rem 0 0.3rem 0;
+  }
+
+  label:first-of-type { margin-top: 0; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.2rem;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .btn-primary:hover { background: var(--primary-dark); }
+
+  .btn-secondary {
+    background: var(--bg);
+    color: var(--ink);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-text {
+    background: none;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    text-decoration: underline;
+    padding: 0.3rem;
+  }
+
+  #vista-token { display: none; }
+  #vista-panel { display: none; }
+
+  .lista-productos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .fila-producto {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.7rem 0.9rem;
+  }
+
+  .fila-producto.inactivo {
+    opacity: 0.5;
+  }
+
+  .fila-producto input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+    flex-shrink: 0;
+  }
+
+  .fila-producto img {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+
+  .fila-producto .info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .fila-producto .info .nombre {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.92rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fila-producto .info .precio {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  .fila-producto .btn-eliminar {
+    background: none;
+    color: var(--danger);
+    font-size: 1.1rem;
+    padding: 0.3rem 0.5rem;
+    flex-shrink: 0;
+  }
+
+  #form-agregar {
+    display: none;
+    margin-top: 1rem;
+    border-top: 1px dashed var(--border);
+    padding-top: 1rem;
+  }
+
+  .estado {
+    font-size: 0.85rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius-md);
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .estado.ok { background: rgba(14,124,102,0.1); color: var(--primary-dark); display: block; }
+  .estado.error { background: rgba(214,69,69,0.1); color: var(--danger); display: block; }
+  .estado.cargando { background: var(--bg); color: var(--ink-soft); display: block; }
+
+  .top-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Panel de <span>Catálogo</span></h1>
+  <p class="subtitle">Elige qué productos se muestran en tienda.adanarias.com y agrega los nuevos.</p>
+
+  <!-- VISTA 1: configurar token (primera vez o si se borró) -->
+  <div class="panel-box" id="vista-token">
+    <h2>🔑 Conectar con GitHub</h2>
+    <p style="font-size:0.85rem; color:var(--ink-soft); margin-top:0;">
+      Este panel guarda los cambios directamente en tu repositorio de GitHub. Para eso necesita
+      una clave de acceso (token) que generas tú mismo, una sola vez. Queda guardada solo en
+      este navegador — nunca se sube al repositorio ni la ve nadie más.
+    </p>
+    <ol>
+      <li>Entra a <code>github.com/settings/personal-access-tokens/new</code> (con tu sesión de GitHub abierta).</li>
+      <li>En <strong>Token name</strong> escribe algo como <code>panel-catalogo</code>.</li>
+      <li>En <strong>Repository access</strong> elige <strong>"Only select repositories"</strong> y selecciona
+        <code>cuaderno-caligrafia-infantil</code> (así el token NO tiene acceso a nada más de tu cuenta).</li>
+      <li>Baja a <strong>Permissions → Repository permissions</strong>, busca <strong>"Contents"</strong> y cámbialo a
+        <strong>"Read and write"</strong>.</li>
+      <li>Clic en <strong>"Generate token"</strong> al final de la página, y copia el código que empieza con
+        <code>github_pat_...</code> (solo se muestra una vez).</li>
+    </ol>
+    <label for="input-token">Pega aquí tu token</label>
+    <input type="password" id="input-token" placeholder="github_pat_...">
+    <button class="btn-primary" id="btn-conectar" onclick="guardarToken()">Conectar</button>
+  </div>
+
+  <!-- VISTA 2: panel real -->
+  <div id="vista-panel">
+    <div class="top-actions">
+      <span style="font-size:0.8rem; color:var(--ink-soft);">Conectado a GitHub</span>
+      <button class="btn-text" onclick="cerrarSesion()">Cambiar token</button>
+    </div>
+
+    <div class="panel-box">
+      <h2>Tus productos</h2>
+      <div class="lista-productos" id="lista-productos">
+        <p style="color:var(--ink-soft); font-size:0.85rem;">Cargando...</p>
+      </div>
+
+      <button class="btn-secondary" id="btn-mostrar-agregar" onclick="mostrarFormAgregar()" style="width:100%;">+ Agregar producto</button>
+
+      <div id="form-agregar">
+        <label>Nombre del producto</label>
+        <input type="text" id="nuevo-nombre" placeholder="Ej. Kit de Rompecabezas Educativo">
+        <label>Descripción corta</label>
+        <input type="text" id="nuevo-descripcion" placeholder="Una línea que resuma el producto">
+        <label>Precio desde (COP, solo números)</label>
+        <input type="number" id="nuevo-precio" placeholder="Ej. 39900">
+        <label>URL de la imagen (ruta dentro del repo, ej. /otro-producto/assets/img/foto.jpg)</label>
+        <input type="text" id="nuevo-imagen" placeholder="/carpeta-producto/assets/img/foto.jpg">
+        <label>Carpeta de su landing (ej. /otro-producto/)</label>
+        <input type="text" id="nuevo-link" placeholder="/otro-producto/">
+        <label>Texto de la insignia (opcional, ej. "Envío gratis")</label>
+        <input type="text" id="nuevo-badge" placeholder="Envío gratis">
+        <button class="btn-primary" id="btn-agregar" onclick="agregarProducto()">Agregar a la lista</button>
+      </div>
+
+      <button class="btn-primary" id="btn-guardar" onclick="guardarCambios()" style="background:var(--accent); color:var(--ink); margin-top:1.5rem;">💾 Guardar cambios en la tienda</button>
+      <div class="estado" id="estado"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const REPO = 'gaminuma06/cuaderno-caligrafia-infantil';
+  const ARCHIVO = 'productos-catalogo.json';
+  const API_BASE = `https://api.github.com/repos/${REPO}/contents/${ARCHIVO}`;
+
+  let productos = [];
+  let shaActual = null;
+
+  function utf8ToBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function base64ToUtf8(b64) {
+    return decodeURIComponent(escape(atob(b64)));
+  }
+
+  function getToken() {
+    return localStorage.getItem('panel_gh_token');
+  }
+
+  function guardarToken() {
+    const valor = document.getElementById('input-token').value.trim();
+    if (!valor) { alert('Pega tu token antes de continuar.'); return; }
+    localStorage.setItem('panel_gh_token', valor);
+    iniciar();
+  }
+
+  window.cerrarSesion = function () {
+    if (!confirm('¿Quitar el token guardado en este navegador? Vas a necesitar pegarlo de nuevo la próxima vez.')) return;
+    localStorage.removeItem('panel_gh_token');
+    iniciar();
+  };
+
+  function mostrarEstado(mensaje, tipo) {
+    const el = document.getElementById('estado');
+    el.textContent = mensaje;
+    el.className = 'estado ' + tipo;
+  }
+
+  async function cargarProductos() {
+    mostrarEstado('Cargando catálogo desde GitHub...', 'cargando');
+    const resp = await fetch(API_BASE, {
+      headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github+json' }
+    });
+
+    if (resp.status === 401 || resp.status === 403) {
+      throw new Error('El token no es válido o no tiene permiso sobre este repositorio. Revisa que hayas dado permiso "Contents: Read and write".');
+    }
+    if (!resp.ok) {
+      throw new Error('No se pudo leer el catálogo (código ' + resp.status + ').');
+    }
+
+    const data = await resp.json();
+    shaActual = data.sha;
+    productos = JSON.parse(base64ToUtf8(data.content));
+    document.getElementById('estado').className = 'estado';
+    renderLista();
+  }
+
+  function renderLista() {
+    const cont = document.getElementById('lista-productos');
+    if (productos.length === 0) {
+      cont.innerHTML = '<p style="color:var(--ink-soft); font-size:0.85rem;">Todavía no hay productos. Agrega el primero abajo.</p>';
+      return;
+    }
+    cont.innerHTML = productos.map((p, idx) => `
+      <div class="fila-producto ${p.activo === false ? 'inactivo' : ''}">
+        <input type="checkbox" ${p.activo !== false ? 'checked' : ''} onchange="toggleActivo(${idx}, this.checked)">
+        <img src="${p.imagen}" alt="">
+        <div class="info">
+          <div class="nombre">${p.nombre}</div>
+          <div class="precio">Desde $${Number(p.precioDesde || 0).toLocaleString('es-CO')}</div>
+        </div>
+        <button class="btn-eliminar" onclick="eliminarProducto(${idx})" title="Eliminar de la lista">🗑</button>
+      </div>
+    `).join('');
+  }
+
+  window.toggleActivo = function (idx, marcado) {
+    productos[idx].activo = marcado;
+    renderLista();
+  };
+
+  window.eliminarProducto = function (idx) {
+    if (!confirm(`¿Quitar "${productos[idx].nombre}" de la lista? (Puedes deshacerlo desde el historial de GitHub si te arrepientes)`)) return;
+    productos.splice(idx, 1);
+    renderLista();
+  };
+
+  window.mostrarFormAgregar = function () {
+    const form = document.getElementById('form-agregar');
+    form.style.display = form.style.display === 'block' ? 'none' : 'block';
+  };
+
+  window.agregarProducto = function () {
+    const nombre = document.getElementById('nuevo-nombre').value.trim();
+    const descripcion = document.getElementById('nuevo-descripcion').value.trim();
+    const precioDesde = parseInt(document.getElementById('nuevo-precio').value, 10);
+    const imagen = document.getElementById('nuevo-imagen').value.trim();
+    const link = document.getElementById('nuevo-link').value.trim();
+    const badge = document.getElementById('nuevo-badge').value.trim();
+
+    if (!nombre || !link || !imagen || isNaN(precioDesde)) {
+      alert('Completa al menos: nombre, precio, imagen y la carpeta de la landing.');
+      return;
+    }
+
+    productos.push({ nombre, descripcion, precioDesde, imagen, link, badge: badge || undefined, activo: true });
+    renderLista();
+
+    ['nuevo-nombre', 'nuevo-descripcion', 'nuevo-precio', 'nuevo-imagen', 'nuevo-link', 'nuevo-badge'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('form-agregar').style.display = 'none';
+  };
+
+  window.guardarCambios = async function () {
+    mostrarEstado('Guardando en GitHub...', 'cargando');
+    try {
+      const contenidoNuevo = JSON.stringify(productos, null, 2);
+      const resp = await fetch(API_BASE, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'token ' + getToken(),
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Actualizar catálogo desde el panel',
+          content: utf8ToBase64(contenidoNuevo),
+          sha: shaActual,
+          branch: 'main'
+        })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || ('Error al guardar (código ' + resp.status + ').'));
+      }
+
+      const data = await resp.json();
+      shaActual = data.content.sha; // importante: actualizar el sha para el próximo guardado
+      mostrarEstado('✅ Guardado. La tienda va a mostrar los cambios en 1-2 minutos.', 'ok');
+    } catch (err) {
+      mostrarEstado('❌ ' + err.message, 'error');
+    }
+  };
+
+  async function iniciar() {
+    const token = getToken();
+    if (!token) {
+      document.getElementById('vista-token').style.display = 'block';
+      document.getElementById('vista-panel').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('vista-token').style.display = 'none';
+    document.getElementById('vista-panel').style.display = 'block';
+
+    try {
+      await cargarProductos();
+    } catch (err) {
+      mostrarEstado('❌ ' + err.message, 'error');
+    }
+  }
+
+  iniciar();
+</script>
+
+</body>
+</html>
