@@ -40,9 +40,9 @@ function doPost(e) {
       if (hoja.getLastRow() === 0) {
         hoja.appendRow([
           "Fecha", "Nombres", "Apellidos", "Cedula", "Telefono", "Departamento",
-          "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado",
+          "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado", "Producto",
         ]);
-        hoja.getRange(1, 1, 1, 13).setFontWeight("bold");
+        hoja.getRange(1, 1, 1, 14).setFontWeight("bold");
       }
 
       if (esDuplicadoReciente(hoja, datos.telefono).esDuplicado) {
@@ -63,6 +63,7 @@ function doPost(e) {
         datos.unidades || "",
         datos.total || "",
         "Nuevo", // Estado: marca manualmente como "Enviado a Dropi" al procesarlo
+        datos.producto || "", // qué landing/producto generó el pedido (varios productos comparten esta hoja)
       ]);
       SpreadsheetApp.flush(); // fuerza a que la fila quede escrita de una vez, no en cola
     } finally {
@@ -162,6 +163,7 @@ function pruebaManual() {
         bundle: "1 Kit",
         unidades: 1,
         total: 45900,
+        producto: "Kit Cuadernos Mágicos Montessori de Caligrafía",
         segundos_en_pagina: 10,
       }),
     },
