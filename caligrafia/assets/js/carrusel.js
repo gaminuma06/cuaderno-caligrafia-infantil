@@ -47,7 +47,7 @@ function initCarrusel() {
     if (nextTimer) { clearTimeout(nextTimer); nextTimer = null; }
     slides.forEach((s) => {
       const v = s.querySelector("video");
-      if (v) { v.onended = null; v.pause(); }
+      if (v) { v.onended = null; v.onerror = null; v.pause(); }
     });
   }
 
@@ -60,9 +60,12 @@ function initCarrusel() {
     if (tieneFuenteReal) {
       // Slide de video con fuente real: espera a que termine para avanzar.
       video.currentTime = 0;
-      video.play().catch(() => {}); // autoplay puede fallar si el navegador lo bloquea
+      video.play().catch(() => next()); // si el navegador bloquea el autoplay, no se queda pegado
       video.onended = next;
-      nextTimer = setTimeout(next, VIDEO_FALLBACK_MS); // red de seguridad
+      // Si el video falla al cargar (red, firewall, ad-blocker, etc.) pasa a
+      // las fotos casi de inmediato en vez de dejar el hueco en blanco 15s.
+      video.onerror = () => setTimeout(next, 800);
+      nextTimer = setTimeout(next, VIDEO_FALLBACK_MS); // red de seguridad por si nada de lo anterior dispara
     } else {
       // Foto normal (o video aún sin fuente real): avanza por tiempo.
       nextTimer = setTimeout(next, PHOTO_MS);
