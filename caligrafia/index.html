@@ -320,7 +320,9 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
 
           <div class="field">
             <label for="ciudad">Ciudad / Municipio</label>
-            <input type="text" id="ciudad" name="ciudad" autocomplete="address-level2" required>
+            <select id="ciudad" name="ciudad" required disabled>
+              <option value="" selected>Primero elige tu departamento</option>
+            </select>
           </div>
 
           <div class="field">
@@ -374,6 +376,7 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
 </div>
 
 <script src="assets/js/cobertura.js"></script>
+<script src="assets/js/municipios.js"></script>
 <script src="assets/js/carrusel.js"></script>
 <script src="assets/js/main.js"></script>
 </body>

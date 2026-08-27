@@ -76,7 +76,30 @@ function initCoberturaSelect() {
     if (aviso) {
       aviso.hidden = !encontrado || encontrado.covered;
     }
+    actualizarCiudades(select.value);
   });
+}
+
+/* ---------- Poblar el <select> de ciudad/municipio según el departamento ----------
+ * Evita que el cliente escriba a mano una ciudad inventada o con errores: solo
+ * puede elegir un municipio real de la lista (ver assets/js/municipios.js). */
+function actualizarCiudades(nombreDepartamento) {
+  const select = document.getElementById("ciudad");
+  if (!select) return;
+
+  const municipios = (typeof MUNICIPIOS_POR_DEPARTAMENTO !== "undefined" && nombreDepartamento)
+    ? MUNICIPIOS_POR_DEPARTAMENTO[nombreDepartamento]
+    : null;
+
+  if (!municipios || municipios.length === 0) {
+    select.innerHTML = '<option value="" selected>Primero elige tu departamento</option>';
+    select.disabled = true;
+    return;
+  }
+
+  select.innerHTML = '<option value="" disabled selected>Selecciona tu ciudad o municipio</option>'
+    + municipios.map((c) => `<option value="${c}">${c}</option>`).join("");
+  select.disabled = false;
 }
 
 /* ---------- Scroll suave desde los botones "Comprar ahora" hacia el formulario ---------- */
