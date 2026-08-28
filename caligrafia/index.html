@@ -375,9 +375,12 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
   <a href="#pedido" class="btn btn-primary" data-cta="comprar">🛒 Comprar ahora</a>
 </div>
 
-<script src="assets/js/cobertura.js"></script>
-<script src="assets/js/municipios.js"></script>
-<script src="assets/js/carrusel.js"></script>
+<!-- Compartidos entre todas las landings de productos (../shared/, fuera de
+     esta carpeta): departamentos/municipios válidos y el carrusel de fotos.
+     Un solo cambio aquí afecta a todos los productos a la vez. -->
+<script src="../shared/js/cobertura.js"></script>
+<script src="../shared/js/municipios.js"></script>
+<script src="../shared/js/carrusel.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

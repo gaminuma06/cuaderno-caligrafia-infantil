@@ -1,5 +1,7 @@
 /**
- * Configuración de cobertura de envíos.
+ * Configuración de cobertura de envíos — COMPARTIDA por todas las landings
+ * de productos (cada una la referencia como ../shared/js/cobertura.js).
+ * Un cambio aquí aplica a todos los productos a la vez.
  *
  * covered:false = el departamento aparece deshabilitado en el formulario
  * y bloquea el envío del pedido con un mensaje al usuario.

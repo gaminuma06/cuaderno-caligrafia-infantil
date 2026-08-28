@@ -1,6 +1,9 @@
 /**
- * Municipios de Colombia por departamento (fuente: DIVIPOLA / dataset público
- * marcovega/colombia-json, 1103 municipios). Se usa para llenar el
+ * Municipios de Colombia por departamento — COMPARTIDO por todas las
+ * landings de productos (../shared/js/municipios.js). Un cambio aquí aplica
+ * a todos los productos a la vez.
+ * (Fuente: DIVIPOLA / dataset público marcovega/colombia-json, 1103
+ * municipios). Se usa para llenar el
  * <select> de "Ciudad / Municipio" del formulario según el departamento
  * elegido, así el cliente solo puede escoger una ciudad real que existe —
  * ya no puede escribir cualquier cosa a mano.
