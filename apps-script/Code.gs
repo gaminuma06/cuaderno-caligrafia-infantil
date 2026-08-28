@@ -9,6 +9,10 @@
  * teléfono en pocos minutos, NO se guardan en la hoja — así no la ensucian
  * con basura. En todos los casos se responde igual (ok:true) para no darle
  * pistas a los bots de que fueron detectados.
+ *
+ * También: al guardar un pedido válido, manda un correo de aviso al dueño
+ * del script, y guarda en la hoja un link directo de WhatsApp + un mensaje
+ * de confirmación ya redactado, listos para copiar/pegar al cliente.
  */
 
 const SHEET_ID = "1QScesaVPIQhF3SU6N-VCCLQ7Ih30sIt14JBSfM0mVOc";
@@ -41,13 +45,17 @@ function doPost(e) {
         hoja.appendRow([
           "Fecha", "Nombres", "Apellidos", "Cedula", "Telefono", "Departamento",
           "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado", "Producto",
+          "Mensaje WhatsApp", "Link WhatsApp",
         ]);
-        hoja.getRange(1, 1, 1, 14).setFontWeight("bold");
+        hoja.getRange(1, 1, 1, 16).setFontWeight("bold");
       }
 
       if (esDuplicadoReciente(hoja, datos.telefono).esDuplicado) {
         return responderOk();
       }
+
+      const mensajeWhatsapp = construirMensajeWhatsapp(datos);
+      const linkWhatsapp = construirLinkWhatsapp(datos.telefono);
 
       hoja.appendRow([
         new Date(datos.fecha || Date.now()),
@@ -64,8 +72,12 @@ function doPost(e) {
         datos.total || "",
         "Nuevo", // Estado: marca manualmente como "Enviado a Dropi" al procesarlo
         datos.producto || "", // qué landing/producto generó el pedido (varios productos comparten esta hoja)
+        mensajeWhatsapp,
+        linkWhatsapp,
       ]);
       SpreadsheetApp.flush(); // fuerza a que la fila quede escrita de una vez, no en cola
+
+      avisarPorCorreo(datos, mensajeWhatsapp, linkWhatsapp);
     } finally {
       lock.releaseLock();
     }
@@ -143,10 +155,61 @@ function esDuplicadoReciente(hoja, telefono) {
   return { esDuplicado: false };
 }
 
+/** El mensaje listo para copiar y pegarle al cliente por WhatsApp, ya con
+ * sus datos rellenados. Edítalo aquí si quieres cambiar el texto — se
+ * regenera automáticamente para cada pedido nuevo. */
+function construirMensajeWhatsapp(datos) {
+  const nombreCompleto = `${datos.nombres || ""} ${datos.apellidos || ""}`.trim();
+  return `Hola ${nombreCompleto}, gracias por generar tu compra. Te dejamos este mensaje para confirmar que tu dirección es ${datos.direccion}, tu cédula es ${datos.cedula}, y tu número de contacto es ${datos.telefono}. Si tienes alguna modificación hazmela saber, y así confirmamos tu pedido y te llegue lo antes posible.`;
+}
+
+/** Link que abre directo el chat de WhatsApp con el cliente (wa.me). */
+function construirLinkWhatsapp(telefono) {
+  const soloDigitos = String(telefono || "").replace(/\D/g, "");
+  return `https://wa.me/57${soloDigitos}`;
+}
+
+/** Manda un correo avisando del pedido nuevo. Nunca deja que un problema
+ * de correo (cuota, lo que sea) tumbe el guardado del pedido — por eso va
+ * en su propio try/catch, separado del guardado en la hoja. */
+function avisarPorCorreo(datos, mensajeWhatsapp, linkWhatsapp) {
+  try {
+    const destinatario = Session.getEffectiveUser().getEmail();
+    if (!destinatario) return;
+
+    const nombreCompleto = `${datos.nombres || ""} ${datos.apellidos || ""}`.trim();
+    const asunto = `🎉 Nuevo pedido: ${nombreCompleto} — ${datos.bundle || ""}`;
+    const cuerpo =
+`Nuevo pedido recibido${datos.producto ? " (" + datos.producto + ")" : ""}:
+
+Cliente: ${nombreCompleto}
+Cédula: ${datos.cedula}
+Teléfono: ${datos.telefono}
+Ciudad: ${datos.ciudad}, ${datos.departamento}
+Dirección: ${datos.direccion}
+Pedido: ${datos.bundle} — $${datos.total}
+Notas del cliente: ${datos.notas || "(ninguna)"}
+
+WhatsApp del cliente: ${linkWhatsapp}
+
+Mensaje de confirmación listo para copiar y pegar:
+---
+${mensajeWhatsapp}
+---
+
+(También queda todo guardado en la hoja de pedidos.)`;
+
+    MailApp.sendEmail(destinatario, asunto, cuerpo);
+  } catch (err) {
+    // No relanzar: si falla el correo, el pedido ya quedó guardado igual.
+  }
+}
+
 /**
  * Función de prueba: selecciónala en el desplegable de arriba en el editor
  * de Apps Script (junto al botón ▷ Ejecutar) y dale clic a Ejecutar.
- * Si todo está bien, debería aparecer una fila de prueba en tu hoja.
+ * Si todo está bien, debería aparecer una fila de prueba en tu hoja Y
+ * llegarte un correo de aviso.
  */
 function pruebaManual() {
   const resultado = doPost({
