@@ -160,7 +160,17 @@ function esDuplicadoReciente(hoja, telefono) {
  * regenera automáticamente para cada pedido nuevo. */
 function construirMensajeWhatsapp(datos) {
   const nombreCompleto = `${datos.nombres || ""} ${datos.apellidos || ""}`.trim();
-  return `Hola ${nombreCompleto}, gracias por generar tu compra. Te dejamos este mensaje para confirmar que tu dirección es ${datos.direccion}, tu cédula es ${datos.cedula}, y tu número de contacto es ${datos.telefono}. Si tienes alguna modificación hazmela saber, y así confirmamos tu pedido y te llegue lo antes posible.`;
+  const producto = datos.producto || "tu pedido";
+  const direccionCompleta = `${datos.direccion}, ${datos.ciudad}, ${datos.departamento}`;
+
+  return `Hola ${nombreCompleto}, somos Tienda Expres 😊 Gracias por confiar en nosotros. Queremos confirmar la información de tu pedido para enviarte tu ${producto} lo antes posible.
+
+Los datos que nos diste son:
+📍 Dirección: ${direccionCompleta}
+🪪 Cédula: ${datos.cedula}
+📱 Teléfono: ${datos.telefono}
+
+Si necesitas corregir algo, avísame y así confirmamos tu pedido para que te llegue lo antes posible.`;
 }
 
 /** Link que abre directo el chat de WhatsApp con el cliente (wa.me). */
