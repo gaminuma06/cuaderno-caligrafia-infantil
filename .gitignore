@@ -1,7 +1,1 @@
-# Configuración local del editor/herramienta (atajos de servidor de
-# desarrollo, etc.) — específica de cada computador, no del proyecto.
-.claude/launch.json
-
-# Lo demás dentro de .claude/ (como .claude/skills/) SÍ se versiona: son
-# instrucciones/conocimiento del proyecto útiles para cualquiera que
-# trabaje en este repositorio, no configuración de una sola máquina.
+.claude/
