@@ -239,30 +239,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 /* ===== Precio + CTA above the fold ===== */
 .price-block {
-  background: var(--color-white);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 18px;
   margin-bottom: 14px;
-  box-shadow: var(--shadow-soft);
-}
-.price-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 4px;
-}
-.price-old {
-  text-decoration: line-through;
-  color: #b3aab8;
-  font-size: 1rem;
-}
-.price-new {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-primary-dark);
 }
 .price-save {
   text-align: center;
@@ -293,55 +270,57 @@ ul { margin: 0; padding: 0; list-style: none; }
   font-size: 0.9rem;
   margin-bottom: 20px;
 }
-.bundle-heading {
-  font-family: var(--font-display);
+.bundle-compact { margin: 4px 0 14px; }
+.bundle-compact-label {
+  font-size: 0.78rem;
   font-weight: 700;
-  font-size: 1.05rem;
-  text-align: center;
-  margin: 0 0 12px;
-}
-.bundles {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.bundle-envio-note {
-  font-size: 0.8rem;
   color: var(--color-ink-soft);
   text-align: center;
-  margin: 0 0 18px;
-  padding-bottom: 18px;
-  border-bottom: 1px dashed var(--color-border);
+  margin: 0 0 6px;
 }
-.bundle-option {
+.bundle-chips {
+  display: flex;
+  gap: 6px;
+}
+.bundle-chip {
   position: relative;
-  display: block;
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 14px 16px 14px 52px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 4px;
+  text-align: center;
   background: var(--color-white);
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.bundle-option input { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; accent-color: var(--color-primary); }
-.bundle-option:has(input:checked) {
+.bundle-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.bundle-chip:has(input:checked) {
   border-color: var(--color-primary);
   background: #fff5f2;
 }
-.bundle-tag {
-  display: inline-block;
-  background: var(--color-accent);
-  color: #7a5200;
-  font-size: 0.68rem;
+.bundle-chip-title { font-weight: 700; font-size: 0.82rem; }
+.bundle-chip-tag {
+  display: block;
+  font-style: normal;
+  font-size: 0.62rem;
   font-weight: 700;
-  padding: 2px 8px;
+  color: #7a5200;
+  background: var(--color-accent);
+  padding: 1px 6px;
   border-radius: 100px;
-  margin-left: 8px;
+  margin-top: 2px;
 }
-.bundle-title { font-weight: 700; font-size: 1rem; }
-.bundle-price { font-size: 0.85rem; color: var(--color-ink-soft); margin-top: 2px; }
-.bundle-total { float: right; font-weight: 800; color: var(--color-primary-dark); }
+.bundle-chip-price { font-size: 0.7rem; color: var(--color-ink-soft); }
+.bundle-compact-note {
+  font-size: 0.74rem;
+  color: var(--color-ink-soft);
+  text-align: center;
+  margin: 8px 0 0;
+}
 
 /* ===== Reviews / trust badges ===== */
 .badges-grid {
@@ -482,9 +461,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* ===== CTA final ===== */
 .cta-final {
   text-align: center;
-  background: linear-gradient(180deg, #fff0da 0%, var(--color-bg-alt) 100%);
-  border-radius: var(--radius-lg);
-  padding: 26px 18px;
 }
 .urgency {
   font-size: 0.82rem;
@@ -533,7 +509,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 @media (min-width: 560px) {
   .hero h1 { font-size: 2.1rem; }
-  .price-new { font-size: 2.4rem; }
 }
 
 /* ===== Layout de escritorio (>= 900px) =====
@@ -560,20 +535,11 @@ ul { margin: 0; padding: 0; list-style: none; }
   .hero-sub { text-align: left; margin: 0; max-width: 460px; font-size: 1.08rem; }
   .media-frame { max-width: 480px; margin: 0; }
 
-  /* Precio + CTA: tarjeta más ancha, pero el botón no se estira a lo loco */
-  .price-block { max-width: 640px; margin: 0 auto 20px; padding: 28px 36px; }
-  .price-block .btn-primary,
-  .cta-final .btn-primary {
-    max-width: 360px;
-    margin: 0 auto;
-  }
+  .price-block { max-width: 640px; margin: 0 auto 20px; }
 
   .section-title { font-size: 1.7rem; }
 
-  /* Bundles en fila */
-  .bundles { flex-direction: row; gap: 20px; }
-  .bundle-option { flex: 1; padding: 22px 20px 20px 52px; }
-  .bundle-total { float: none; display: block; font-size: 1.4rem; margin-top: 10px; }
+  .bundle-chip { padding: 10px 6px; }
 
   /* Badges de confianza en una sola fila */
   .badges-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -596,7 +562,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   }
   .step-num { margin-bottom: 12px; }
 
-  .cta-final { max-width: 760px; margin: 0 auto; padding: 40px 48px; }
+  .cta-final { max-width: 760px; margin: 0 auto; }
 
   /* Formulario: columna centrada, más ancha pero no a lo largo de toda la pantalla */
   #pedido .order-card { max-width: 640px; margin: 0 auto; padding: 32px 40px; }
