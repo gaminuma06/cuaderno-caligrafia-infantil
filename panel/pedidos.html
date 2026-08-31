@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de Pedidos | Tienda Adan Arias</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --bg-card: #ffffff;
+    --ink: #1f2937;
+    --ink-soft: #5b6472;
+    --primary: #0e7c66;
+    --primary-dark: #0b5f4f;
+    --accent: #f5b400;
+    --danger: #d64545;
+    --border: #e5e2da;
+    --radius-lg: 18px;
+    --radius-md: 10px;
+    --shadow-soft: 0 8px 24px rgba(31, 41, 55, 0.08);
+    --font-display: "Manrope", "Segoe UI", sans-serif;
+    --font-body: "Inter", "Segoe UI", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 5rem 1.25rem;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.6rem;
+    margin: 0 0 0.3rem 0;
+  }
+
+  h1 span { color: var(--primary); }
+
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    margin: 0 0 1.8rem 0;
+  }
+
+  .panel-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel-box h2 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    margin: 0 0 0.8rem 0;
+  }
+
+  input[type="password"] {
+    width: 100%;
+    padding: 0.7rem 0.8rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin: 0.7rem 0 0.3rem 0;
+  }
+
+  label:first-of-type { margin-top: 0; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.2rem;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .btn-primary:hover { background: var(--primary-dark); }
+
+  .btn-text {
+    background: none;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    text-decoration: underline;
+    padding: 0.3rem;
+  }
+
+  #vista-pin { display: none; }
+  #vista-panel { display: none; }
+
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: var(--bg-card);
+    color: var(--ink-soft);
+    border: 1.5px solid var(--border);
+  }
+
+  .tab-btn.activo {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .lista-pedidos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .pedido-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1rem;
+  }
+
+  .pedido-card .nombre {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.98rem;
+  }
+
+  .pedido-card .detalle {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-top: 0.2rem;
+    line-height: 1.5;
+  }
+
+  .pedido-card .notas {
+    font-size: 0.8rem;
+    color: var(--ink);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  .pedido-card button {
+    width: 100%;
+    margin-top: 0.8rem;
+  }
+
+  .btn-enviar { background: var(--accent); color: var(--ink); }
+  .btn-recibir { background: var(--primary); color: white; }
+
+  .top-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .estado {
+    font-size: 0.85rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius-md);
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .estado.ok { background: rgba(14,124,102,0.1); color: var(--primary-dark); display: block; }
+  .estado.error { background: rgba(214,69,69,0.1); color: var(--danger); display: block; }
+  .estado.cargando { background: var(--bg); color: var(--ink-soft); display: block; }
+
+  .vacio {
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 1rem 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Panel de <span>Pedidos</span></h1>
+  <p class="subtitle">Marca tus pedidos como enviados o recibidos desde el celular.</p>
+
+  <!-- VISTA 1: pedir el PIN (primera vez o si se borró) -->
+  <div class="panel-box" id="vista-pin">
+    <h2>🔒 Ingresa tu PIN</h2>
+    <p style="font-size:0.85rem; color:var(--ink-soft); margin-top:0;">
+      El mismo PIN que configuraste en <code>apps-script/Code.gs</code> (constante <code>PANEL_PIN</code>).
+      Queda guardado solo en este navegador.
+    </p>
+    <label for="input-pin">PIN</label>
+    <input type="password" id="input-pin" inputmode="numeric" placeholder="••••">
+    <button class="btn-primary" onclick="guardarPin()">Entrar</button>
+    <div class="estado" id="estado-pin"></div>
+  </div>
+
+  <!-- VISTA 2: panel real -->
+  <div id="vista-panel">
+    <div class="top-actions">
+      <span style="font-size:0.8rem; color:var(--ink-soft);">Conectado</span>
+      <button class="btn-text" onclick="cerrarSesion()">Cambiar PIN</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn" id="tab-pendientes" onclick="cambiarTab('pendientes')">📦 Por enviar</button>
+      <button class="tab-btn" id="tab-enviados" onclick="cambiarTab('enviados')">🚚 Enviados</button>
+    </div>
+
+    <div class="panel-box">
+      <div class="lista-pedidos" id="lista-pedidos">
+        <p class="vacio">Cargando...</p>
+      </div>
+      <div class="estado" id="estado-panel"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7E_hyg8wKg-T_pfbInvZNEOP2ZeBjMdckaTXw39oBO_SIGa1VB2J-GjBAou5hR6wLWw/exec";
+
+  let tabActual = 'pendientes';
+
+  function getPin() {
+    return localStorage.getItem('panel_pedidos_pin');
+  }
+
+  function guardarPin() {
+    const valor = document.getElementById('input-pin').value.trim();
+    if (!valor) { alert('Escribe tu PIN antes de continuar.'); return; }
+    localStorage.setItem('panel_pedidos_pin', valor);
+    iniciar();
+  }
+
+  window.cerrarSesion = function () {
+    if (!confirm('¿Quitar el PIN guardado en este navegador?')) return;
+    localStorage.removeItem('panel_pedidos_pin');
+    iniciar();
+  };
+
+  function mostrarEstado(id, mensaje, tipo) {
+    const el = document.getElementById(id);
+    el.textContent = mensaje;
+    el.className = 'estado ' + tipo;
+  }
+
+  function limpiarEstado(id) {
+    const el = document.getElementById(id);
+    el.textContent = '';
+    el.className = 'estado';
+  }
+
+  window.cambiarTab = function (tab) {
+    tabActual = tab;
+    document.getElementById('tab-pendientes').className = 'tab-btn' + (tab === 'pendientes' ? ' activo' : '');
+    document.getElementById('tab-enviados').className = 'tab-btn' + (tab === 'enviados' ? ' activo' : '');
+    cargarLista();
+  };
+
+  async function llamar(params) {
+    const url = new URL(APPS_SCRIPT_URL);
+    url.searchParams.set('pin', getPin());
+    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+    const resp = await fetch(url.toString());
+    if (!resp.ok) throw new Error('Error de red (código ' + resp.status + ').');
+    return resp.json();
+  }
+
+  async function cargarLista() {
+    document.getElementById('lista-pedidos').innerHTML = '<p class="vacio">Cargando...</p>';
+    limpiarEstado('estado-panel');
+    try {
+      const data = await llamar({ accion: 'listar', hoja: tabActual === 'enviados' ? 'enviados' : 'pendientes' });
+      if (!data.ok) {
+        if (data.error === 'PIN incorrecto.') {
+          localStorage.removeItem('panel_pedidos_pin');
+          iniciar();
+          return;
+        }
+        throw new Error(data.error || 'Error desconocido.');
+      }
+      renderLista(data.pedidos);
+    } catch (err) {
+      document.getElementById('lista-pedidos').innerHTML = '';
+      mostrarEstado('estado-panel', '❌ ' + err.message, 'error');
+    }
+  }
+
+  function renderLista(pedidos) {
+    const cont = document.getElementById('lista-pedidos');
+    if (!pedidos.length) {
+      cont.innerHTML = '<p class="vacio">' + (tabActual === 'enviados' ? 'No hay pedidos enviados esperando confirmación.' : 'No hay pedidos nuevos por enviar.') + '</p>';
+      return;
+    }
+    cont.innerHTML = pedidos.map((p) => `
+      <div class="pedido-card">
+        <div class="nombre">${p.nombres} ${p.apellidos}</div>
+        <div class="detalle">
+          📱 ${p.telefono} · ${p.ciudad}, ${p.departamento}<br>
+          🛒 ${p.bundle} — $${Number(p.total || 0).toLocaleString('es-CO')}<br>
+          🕒 ${p.fecha}
+        </div>
+        ${p.notas ? `<div class="notas">📝 ${p.notas}</div>` : ''}
+        ${tabActual === 'pendientes'
+          ? `<button class="btn-enviar" onclick="accionar('marcarEnviado', ${p.fila})">📦 Marcar enviado</button>`
+          : `<button class="btn-recibir" onclick="accionar('marcarRecibido', ${p.fila})">✅ Marcar recibido</button>`}
+      </div>
+    `).join('');
+  }
+
+  window.accionar = async function (accion, fila) {
+    mostrarEstado('estado-panel', 'Guardando...', 'cargando');
+    try {
+      const data = await llamar({ accion, fila });
+      if (!data.ok) throw new Error(data.error || 'Error desconocido.');
+      mostrarEstado('estado-panel', '✅ Listo.', 'ok');
+      setTimeout(cargarLista, 900);
+    } catch (err) {
+      mostrarEstado('estado-panel', '❌ ' + err.message, 'error');
+    }
+  };
+
+  async function iniciar() {
+    const pin = getPin();
+    if (!pin) {
+      document.getElementById('vista-pin').style.display = 'block';
+      document.getElementById('vista-panel').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('vista-pin').style.display = 'none';
+    document.getElementById('vista-panel').style.display = 'block';
+    cambiarTab('pendientes');
+  }
+
+  iniciar();
+</script>
+
+</body>
+</html>

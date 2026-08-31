@@ -19,6 +19,21 @@ const SHEET_ID = "1QScesaVPIQhF3SU6N-VCCLQ7Ih30sIt14JBSfM0mVOc";
 const SEGUNDOS_MINIMOS_EN_PAGINA = 3; // menos que esto = casi seguro un bot
 const MINUTOS_ANTIDUPLICADO = 3; // mismo teléfono repetido antes de este tiempo = ignorado
 
+// PIN para el panel de pedidos (/panel/pedidos.html) — CAMBIA este valor por
+// uno tuyo antes de usar el panel. Sin este PIN nadie puede ver ni mover
+// pedidos, aunque conozca la URL del script (que ya es pública: está en el
+// código de la página).
+const PANEL_PIN = "CAMBIA-ESTE-PIN";
+
+const NOMBRE_HOJA_ENVIADOS = "Pedidos Enviados";
+const COL_ESTADO = 14; // columna "Estado", igual en ambas hojas
+const ENCABEZADOS_PEDIDOS = [
+  "Fecha", "Nombres", "Apellidos", "Cedula", "Telefono", "Correo", "Departamento",
+  "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado", "Producto",
+  "Mensaje WhatsApp", "Link WhatsApp",
+];
+const ENCABEZADOS_ENVIADOS = ENCABEZADOS_PEDIDOS.concat(["Fecha Envio", "Fecha Recibido"]);
+
 function doPost(e) {
   try {
     const datos = JSON.parse(e.postData.contents);
@@ -42,12 +57,8 @@ function doPost(e) {
       const hoja = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
 
       if (hoja.getLastRow() === 0) {
-        hoja.appendRow([
-          "Fecha", "Nombres", "Apellidos", "Cedula", "Telefono", "Correo", "Departamento",
-          "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado", "Producto",
-          "Mensaje WhatsApp", "Link WhatsApp",
-        ]);
-        hoja.getRange(1, 1, 1, 17).setFontWeight("bold");
+        hoja.appendRow(ENCABEZADOS_PEDIDOS);
+        hoja.getRange(1, 1, 1, ENCABEZADOS_PEDIDOS.length).setFontWeight("bold");
       }
 
       if (esDuplicadoReciente(hoja, datos.telefono).esDuplicado) {
@@ -71,7 +82,7 @@ function doPost(e) {
         datos.bundle || "",
         datos.unidades || "",
         datos.total || "",
-        "Nuevo", // Estado: marca manualmente como "Enviado a Dropi" al procesarlo
+        "Nuevo", // Estado: pasa a "Enviado" desde /panel/pedidos.html al subirlo a Dropi
         datos.producto || "", // qué landing/producto generó el pedido (varios productos comparten esta hoja)
         mensajeWhatsapp,
         linkWhatsapp,
@@ -92,9 +103,140 @@ function doPost(e) {
 }
 
 function responderOk() {
+  return responderJson({ ok: true });
+}
+
+function responderJson(obj) {
   return ContentService
-    .createTextOutput(JSON.stringify({ ok: true }))
+    .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * Panel de pedidos (/panel/pedidos.html): listar pedidos pendientes/enviados
+ * y mover un pedido de estado con un toque desde el celular.
+ *   ?accion=listar&hoja=pendientes|enviados&pin=...
+ *   ?accion=marcarEnviado&fila=N&pin=...   (mueve de "Pedidos" a "Pedidos Enviados")
+ *   ?accion=marcarRecibido&fila=N&pin=...  (cierra el pedido en "Pedidos Enviados")
+ * Protegido con PANEL_PIN: sin el PIN correcto no se devuelve ni se mueve nada,
+ * aunque esta URL sea pública (está en el código de la página).
+ */
+function doGet(e) {
+  try {
+    const p = e.parameter || {};
+    if (p.pin !== PANEL_PIN) {
+      return responderJson({ ok: false, error: "PIN incorrecto." });
+    }
+
+    if (p.accion === "listar") {
+      if (p.hoja === "enviados") {
+        return responderJson({ ok: true, pedidos: listarPedidos(obtenerHojaEnviados(), "Enviado") });
+      }
+      const hojaPedidos = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+      return responderJson({ ok: true, pedidos: listarPedidos(hojaPedidos, "Nuevo") });
+    }
+
+    if (p.accion === "marcarEnviado") {
+      return responderJson(marcarComoEnviado(parseInt(p.fila, 10)));
+    }
+
+    if (p.accion === "marcarRecibido") {
+      return responderJson(marcarComoRecibido(parseInt(p.fila, 10)));
+    }
+
+    return responderJson({ ok: false, error: "Acción no reconocida." });
+  } catch (err) {
+    return responderJson({ ok: false, error: String(err) });
+  }
+}
+
+/** Devuelve la hoja "Pedidos Enviados", creándola (con encabezados) la
+ * primera vez que se necesita — no hay que crearla a mano en Sheets. */
+function obtenerHojaEnviados() {
+  const libro = SpreadsheetApp.openById(SHEET_ID);
+  let hoja = libro.getSheetByName(NOMBRE_HOJA_ENVIADOS);
+  if (!hoja) {
+    hoja = libro.insertSheet(NOMBRE_HOJA_ENVIADOS);
+    hoja.appendRow(ENCABEZADOS_ENVIADOS);
+    hoja.getRange(1, 1, 1, ENCABEZADOS_ENVIADOS.length).setFontWeight("bold");
+  }
+  return hoja;
+}
+
+/** Filas de `hoja` cuyo Estado sea exactamente `estadoBuscado`, con su
+ * número de fila real (para poder marcarlas después). Más nuevas primero. */
+function listarPedidos(hoja, estadoBuscado) {
+  const ultimaFila = hoja.getLastRow();
+  if (ultimaFila < 2) return [];
+
+  const valores = hoja.getRange(2, 1, ultimaFila - 1, 15).getValues(); // A:Producto
+  const resultado = [];
+  valores.forEach((fila, i) => {
+    if (fila[COL_ESTADO - 1] !== estadoBuscado) return;
+    resultado.push({
+      fila: i + 2,
+      fecha: fila[0] ? new Date(fila[0]).toLocaleString("es-CO") : "",
+      nombres: fila[1],
+      apellidos: fila[2],
+      telefono: fila[4],
+      departamento: fila[6],
+      ciudad: fila[7],
+      notas: fila[9],
+      bundle: fila[10],
+      total: fila[12],
+      producto: fila[14],
+    });
+  });
+  return resultado.reverse();
+}
+
+/** Mueve la fila `fila` de "Pedidos" a "Pedidos Enviados", marcándola
+ * "Enviado". Revalida el estado por si la lista quedó desactualizada
+ * (ej. dos toques seguidos, o el pedido ya se movió desde otra pestaña). */
+function marcarComoEnviado(fila) {
+  if (!fila || fila < 2) return { ok: false, error: "Pedido inválido." };
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return { ok: false, error: "Ocupado, intenta de nuevo en un momento." };
+  try {
+    const hojaPedidos = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+    if (fila > hojaPedidos.getLastRow()) {
+      return { ok: false, error: "Ese pedido ya no está en la lista. Actualiza." };
+    }
+    const rango = hojaPedidos.getRange(fila, 1, 1, ENCABEZADOS_PEDIDOS.length);
+    const valores = rango.getValues()[0];
+    if (valores[COL_ESTADO - 1] !== "Nuevo") {
+      return { ok: false, error: "Ese pedido ya cambió de estado. Actualiza la lista." };
+    }
+
+    valores[COL_ESTADO - 1] = "Enviado";
+    obtenerHojaEnviados().appendRow(valores.concat([new Date(), ""]));
+    hojaPedidos.deleteRow(fila);
+    return { ok: true };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/** Cierra un pedido en "Pedidos Enviados": Enviado -> Recibido por cliente. */
+function marcarComoRecibido(fila) {
+  if (!fila || fila < 2) return { ok: false, error: "Pedido inválido." };
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return { ok: false, error: "Ocupado, intenta de nuevo en un momento." };
+  try {
+    const hoja = obtenerHojaEnviados();
+    if (fila > hoja.getLastRow()) {
+      return { ok: false, error: "Ese pedido ya no está en la lista. Actualiza." };
+    }
+    const celdaEstado = hoja.getRange(fila, COL_ESTADO);
+    if (celdaEstado.getValue() !== "Enviado") {
+      return { ok: false, error: "Ese pedido ya cambió de estado. Actualiza la lista." };
+    }
+    celdaEstado.setValue("Recibido por cliente");
+    hoja.getRange(fila, ENCABEZADOS_ENVIADOS.length).setValue(new Date());
+    return { ok: true };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /** Revalida en el servidor lo mismo que ya valida el formulario, más las
