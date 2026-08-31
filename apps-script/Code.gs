@@ -43,11 +43,11 @@ function doPost(e) {
 
       if (hoja.getLastRow() === 0) {
         hoja.appendRow([
-          "Fecha", "Nombres", "Apellidos", "Cedula", "Telefono", "Departamento",
+          "Fecha", "Nombres", "Apellidos", "Cedula", "Telefono", "Correo", "Departamento",
           "Ciudad", "Direccion", "Notas", "Bundle", "Unidades", "Total", "Estado", "Producto",
           "Mensaje WhatsApp", "Link WhatsApp",
         ]);
-        hoja.getRange(1, 1, 1, 16).setFontWeight("bold");
+        hoja.getRange(1, 1, 1, 17).setFontWeight("bold");
       }
 
       if (esDuplicadoReciente(hoja, datos.telefono).esDuplicado) {
@@ -63,6 +63,7 @@ function doPost(e) {
         datos.apellidos || "",
         datos.cedula || "",
         datos.telefono || "",
+        datos.correo || "",
         datos.departamento || "",
         datos.ciudad || "",
         datos.direccion || "",
@@ -111,6 +112,7 @@ function esPedidoLegitimo(datos) {
   const apellidos = (datos.apellidos || "").trim();
   const cedula = (datos.cedula || "").trim();
   const telefono = (datos.telefono || "").trim();
+  const correo = (datos.correo || "").trim();
   const ciudad = (datos.ciudad || "").trim();
   const direccion = (datos.direccion || "").trim();
 
@@ -118,6 +120,7 @@ function esPedidoLegitimo(datos) {
   if (apellidos.length < 2) return false;
   if (!/^\d{6,10}$/.test(cedula)) return false;
   if (!/^3\d{9}$/.test(telefono)) return false;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return false;
   if (!datos.departamento) return false;
   if (ciudad.length < 2) return false;
   if (direccion.length < 5) return false;
@@ -195,6 +198,7 @@ function avisarPorCorreo(datos, mensajeWhatsapp, linkWhatsapp) {
 Cliente: ${nombreCompleto}
 Cédula: ${datos.cedula}
 Teléfono: ${datos.telefono}
+Correo: ${datos.correo}
 Ciudad: ${datos.ciudad}, ${datos.departamento}
 Dirección: ${datos.direccion}
 Pedido: ${datos.bundle} — $${datos.total}
@@ -229,6 +233,7 @@ function pruebaManual() {
         apellidos: "Sistema",
         cedula: "1000000000",
         telefono: "3000000000",
+        correo: "prueba@ejemplo.com",
         departamento: "Antioquia",
         ciudad: "Medellín",
         direccion: "Dirección de prueba",

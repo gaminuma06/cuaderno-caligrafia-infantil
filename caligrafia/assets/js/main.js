@@ -13,7 +13,7 @@ const WHATSAPP_NUMERO = "573012251358";
 const BUNDLES = {
   "1": { unidades: 1, total: 45900, etiqueta: "1 Kit" },
   "2": { unidades: 2, total: 79900, etiqueta: "2 Kits" },
-  "3": { unidades: 3, total: 99900, etiqueta: "3 Kits" },
+  "3": { unidades: 3, total: 100800, etiqueta: "3 Kits" },
 };
 
 const PAGE_LOADED_AT = Date.now();
@@ -132,6 +132,7 @@ function initForm() {
 
   const telefonoRegex = /^3\d{9}$/;
   const cedulaRegex = /^\d{6,10}$/;
+  const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -140,6 +141,7 @@ function initForm() {
     const apellidos = form.apellidos.value.trim();
     const cedula = form.cedula.value.trim();
     const telefono = form.telefono.value.trim();
+    const correo = form.correo.value.trim();
     const departamento = form.departamento.value;
     const ciudad = form.ciudad.value.trim();
     const direccion = form.direccion.value.trim();
@@ -151,6 +153,7 @@ function initForm() {
     if (apellidos.length < 2) errores.push("Ingresa tus apellidos.");
     if (!cedulaRegex.test(cedula)) errores.push("Ingresa un número de cédula válido (6 a 10 dígitos).");
     if (!telefonoRegex.test(telefono)) errores.push("Ingresa un celular colombiano válido (10 dígitos, empieza en 3).");
+    if (!correoRegex.test(correo)) errores.push("Ingresa un correo electrónico válido.");
     if (!departamento) errores.push("Selecciona tu departamento.");
     if (ciudad.length < 2) errores.push("Ingresa tu ciudad o municipio.");
     if (direccion.length < 5) errores.push("Ingresa una dirección completa.");
@@ -179,6 +182,7 @@ function initForm() {
       apellidos,
       cedula,
       telefono,
+      correo,
       departamento,
       ciudad,
       direccion,
