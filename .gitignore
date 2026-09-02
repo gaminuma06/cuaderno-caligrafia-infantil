@@ -1,1 +1,7 @@
 .claude/
+
+# Contiene la clave real del panel de pedidos (PANEL_PIN) — este repo es
+# público, así que este archivo ya no se sube a GitHub. Se sigue editando
+# aquí en local y compartiendo por chat cuando cambie; para pegarlo en
+# Apps Script sigue estando en esta misma ruta.
+apps-script/Code.gs
