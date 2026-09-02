@@ -94,17 +94,8 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
         <div class="media-viewport" id="media-viewport">
           <div class="media-track" id="media-track">
 
-            <!-- Slide 1: video de demostración (14s, armado con las fotos reales
-                 del producto). Se reproduce solo al llegar a este slide y, al
-                 terminar, el carrusel avanza a las fotos automáticamente. -->
             <div class="media-slide">
-              <video muted playsinline preload="auto">
-                <source src="assets/img/video-demo.mp4" type="video/mp4">
-              </video>
-            </div>
-
-            <div class="media-slide">
-              <img src="assets/img/foto-1-kit-completo.jpg" alt="Kit completo: los 4 cuadernos Montessori (Alfabeto, Números, Matemáticas y Dibujo) con el lapicero y los núcleos de repuesto" loading="lazy">
+              <img src="assets/img/foto-1-kit-completo.jpg" alt="Kit completo: los 4 cuadernos Montessori (Alfabeto, Números, Matemáticas y Dibujo) con el lapicero y los núcleos de repuesto">
             </div>
 
             <div class="media-slide">
@@ -266,15 +257,9 @@ if (FB_PIXEL_ID.indexOf('PENDIENTE') === -1) {
             </div>
           </div>
 
-          <div class="field-row">
-            <div class="field">
-              <label for="cedula">Cédula</label>
-              <input type="text" inputmode="numeric" id="cedula" name="cedula" placeholder="1000000000" autocomplete="off" required>
-            </div>
-            <div class="field">
-              <label for="telefono">Celular (WhatsApp)</label>
-              <input type="tel" id="telefono" name="telefono" placeholder="3001234567" autocomplete="tel" required>
-            </div>
+          <div class="field">
+            <label for="telefono">Celular (WhatsApp)</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="3001234567" autocomplete="tel" required>
           </div>
 
           <div class="field">

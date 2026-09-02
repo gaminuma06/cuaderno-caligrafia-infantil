@@ -252,7 +252,6 @@ function esPedidoLegitimo(datos) {
 
   const nombres = (datos.nombres || "").trim();
   const apellidos = (datos.apellidos || "").trim();
-  const cedula = (datos.cedula || "").trim();
   const telefono = (datos.telefono || "").trim();
   const correo = (datos.correo || "").trim();
   const ciudad = (datos.ciudad || "").trim();
@@ -260,7 +259,6 @@ function esPedidoLegitimo(datos) {
 
   if (nombres.length < 2) return false;
   if (apellidos.length < 2) return false;
-  if (!/^\d{6,10}$/.test(cedula)) return false;
   if (!/^3\d{9}$/.test(telefono)) return false;
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return false;
   if (!datos.departamento) return false;
@@ -312,7 +310,6 @@ function construirMensajeWhatsapp(datos) {
 
 Los datos que nos diste son:
 📍 Dirección: ${direccionCompleta}
-🪪 Cédula: ${datos.cedula}
 📱 Teléfono: ${datos.telefono}
 
 Si necesitas corregir algo, avísame y así confirmamos tu pedido para que te llegue lo antes posible.`;
@@ -338,7 +335,6 @@ function avisarPorCorreo(datos, mensajeWhatsapp, linkWhatsapp) {
 `Nuevo pedido recibido${datos.producto ? " (" + datos.producto + ")" : ""}:
 
 Cliente: ${nombreCompleto}
-Cédula: ${datos.cedula}
 Teléfono: ${datos.telefono}
 Correo: ${datos.correo}
 Ciudad: ${datos.ciudad}, ${datos.departamento}
@@ -373,7 +369,6 @@ function pruebaManual() {
       contents: JSON.stringify({
         nombres: "Prueba",
         apellidos: "Sistema",
-        cedula: "1000000000",
         telefono: "3000000000",
         correo: "prueba@ejemplo.com",
         departamento: "Antioquia",

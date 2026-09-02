@@ -131,7 +131,6 @@ function initForm() {
   if (!form) return;
 
   const telefonoRegex = /^3\d{9}$/;
-  const cedulaRegex = /^\d{6,10}$/;
   const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   form.addEventListener("submit", async (e) => {
@@ -139,7 +138,6 @@ function initForm() {
 
     const nombres = form.nombres.value.trim();
     const apellidos = form.apellidos.value.trim();
-    const cedula = form.cedula.value.trim();
     const telefono = form.telefono.value.trim();
     const correo = form.correo.value.trim();
     const departamento = form.departamento.value;
@@ -151,7 +149,6 @@ function initForm() {
     const errores = [];
     if (nombres.length < 2) errores.push("Ingresa tu nombre completo.");
     if (apellidos.length < 2) errores.push("Ingresa tus apellidos.");
-    if (!cedulaRegex.test(cedula)) errores.push("Ingresa un número de cédula válido (6 a 10 dígitos).");
     if (!telefonoRegex.test(telefono)) errores.push("Ingresa un celular colombiano válido (10 dígitos, empieza en 3).");
     if (!correoRegex.test(correo)) errores.push("Ingresa un correo electrónico válido.");
     if (!departamento) errores.push("Selecciona tu departamento.");
@@ -180,7 +177,6 @@ function initForm() {
       fecha: new Date().toISOString(),
       nombres,
       apellidos,
-      cedula,
       telefono,
       correo,
       departamento,
