@@ -112,7 +112,7 @@ function initSmoothScrollCTAs() {
       if (primerCampo) setTimeout(() => primerCampo.focus(), 400);
 
       const bundleInput = document.querySelector('input[name="bundle"]:checked');
-      const bundle = BUNDLES[bundleInput ? bundleInput.value : "1"];
+      const bundle = BUNDLES[bundleInput ? bundleInput.value : "3"];
       trackFbEvent("InitiateCheckout", {
         content_name: "Kit Cuadernos Mágicos Montessori de Caligrafía",
         content_ids: ["861688"],
@@ -144,7 +144,7 @@ function initForm() {
     const ciudad = form.ciudad.value.trim();
     const direccion = form.direccion.value.trim();
     const bundleInput = document.querySelector('input[name="bundle"]:checked');
-    const bundle = bundleInput ? bundleInput.value : "1";
+    const bundle = bundleInput ? bundleInput.value : "3";
 
     const errores = [];
     if (nombres.length < 2) errores.push("Ingresa tu nombre completo.");

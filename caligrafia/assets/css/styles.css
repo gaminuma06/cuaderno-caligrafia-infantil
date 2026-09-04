@@ -278,6 +278,13 @@ ul { margin: 0; padding: 0; list-style: none; }
   text-align: center;
   margin: 0 0 6px;
 }
+.bundle-compact-badge {
+  text-align: center;
+  margin: 0 0 10px;
+}
+.bundle-compact-badge .hero-badge {
+  margin-bottom: 0;
+}
 .bundle-chips {
   display: flex;
   gap: 6px;
